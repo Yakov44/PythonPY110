@@ -39,13 +39,16 @@ def current_weather(lat: float, lon: float) -> dict:
     Raises:
         ValueError: Если широта или долгота находятся вне
                     допустимого диапазона.
-
-
     """
+
     try:
         if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
             raise ValueError('Указанное местоположение выходит из существующего диапазона.')
+    except ValueError as error:
+        print(error)
+        return {}
 
+    else:
         params = {
             'key': '6d1fb8fe0672484a88a52901252911',
             'q': f'{lat},{lon}'
@@ -66,10 +69,11 @@ def current_weather(lat: float, lon: float) -> dict:
             'wind_gust': data['current']['gust_kph'],  # Скорость порыва ветра
             'wind_dir': DIRECTION_TRANSFORM.get(data['current']['wind_dir'].lower()),  # Направление ветра
         }
+
         return result
 
-    except ValueError as error:
-        print(error)
+
+
 
 
 if __name__ == "__main__":
