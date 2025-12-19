@@ -70,14 +70,16 @@ def remove_from_cart(id_product: str, username: str = '') -> bool:
     не существует).
     """
     cart = view_in_cart(username)
-
     # С переменной user_cart функции remove_from_cart ситуация аналогичная, что с cart функции add_to_cart
     user_cart = cart
 
     if id_product not in user_cart[username]['products']:
         return False
 
-    user_cart[username]['products'].pop(id_product)
+    if user_cart[username]['products'][id_product] > 1:
+        user_cart[username]['products'][id_product] -= 1
+    else:
+        user_cart[username]['products'].pop(id_product)
 
     with open(PATH_CART, 'w', encoding='utf-8') as f:
         json.dump(cart, f)
