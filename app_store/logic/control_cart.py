@@ -76,9 +76,7 @@ def remove_from_cart(id_product: str, username: str = '') -> bool:
     if id_product not in user_cart[username]['products']:
         return False
 
-    if user_cart[username]['products'][id_product] > 1:
-        user_cart[username]['products'][id_product] -= 1
-    else:
+    if id_product in user_cart[username]['products']:
         user_cart[username]['products'].pop(id_product)
 
     with open(PATH_CART, 'w', encoding='utf-8') as f:
