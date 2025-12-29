@@ -1,3 +1,5 @@
+import random
+
 from django.http import JsonResponse, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render, redirect
 from .models import DATABASE
@@ -56,17 +58,27 @@ def product_page_view(request, page):
         if isinstance(page, str):
             for data in DATABASE.values():
                 if data['html'] == page:
-                    data_other_products = DATABASE.values()
+                    data_other_products = [prod for prod in DATABASE.values() if
+                                           prod['category'] == data['category'] and prod['name'] != data['name']]
+
+                    if len(data_other_products) > 5:
+                        data_other_products = random.sample(data_other_products, k=5)
+
                     return render(request, 'app_store/product.html', context={'product': data,
-                                                                                            'other_products': data_other_products})
+                                                                                                'other_products': data_other_products})
                 return HttpResponse(status=404)
 
         elif isinstance(page, int):
             data = DATABASE.get(str(page))
             if data:
-                data_other_products = DATABASE.values()
+                data_other_products = [prod for prod in DATABASE.values() if
+                                       prod['category'] == data['category'] and prod['name'] != data['name']]
+
+                if len(data_other_products) > 5:
+                    data_other_products = random.sample(data_other_products, k=5)
+
                 return render(request, 'app_store/product.html', context={'product': data,
-                                                                                        'other_products': data_other_products})
+                                                                          'other_products': data_other_products})
             return HttpResponse(status=404)
 
 @login_required(login_url='app_login:login_view')
